@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caoxianfei.exits4.dao.UserDao">
+		
+		
+		
+		
+		
+		<resultMap type="User" id="sMap">
+				<id property="id" column="id"></id>
+				<result property="name" column="name"/>
+				<result property="time" column="time"/>
+				<collection property="list" ofType="Coupon">
+						<id property="cid" column="cid"/>
+						<result property="cname" column="cname"/>
+				</collection>
+		</resultMap>
+		
+		
+		<select id="list" resultType="User">
+				select u.*,group_concat(cp.cname) names from user u left join center c on u.id=c.id left join coupon cp on c.cid=cp.cid group by u.id
+		</select> 
+		
+		
+		
+		<select id="selectOne" resultMap="sMap">
+				select u.*,cp.* from user u left join center c on u.id=c.id left join coupon cp on c.cid=cp.cid where u.id=#{id}
+		</select>
+		
+		<delete id="dels">
+				delete from center where id=#{id}
+		</delete>
+		
+		<update id="update">
+				update user set name=#{u.name},time=#{u.time} where id=#{u.id}
+		</update>
+		
+		<insert id="addCenter">
+				insert into center values(#{id},#{cid})
+		</insert>
+		
+		<insert id="addUser"  parameterType="User" useGeneratedKeys="true" keyProperty="u.id">
+				insert into user values(#{u.id},#{u.name},#{u.time})
+		</insert>
+		
+</mapper>
